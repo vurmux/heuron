@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+
 class Instruction:
     
     def __init__(self, name, function):

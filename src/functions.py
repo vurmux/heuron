@@ -1,5 +1,8 @@
 #!/usr/bin/python
 
+import flag-functions as ff
+import flag
+
 
 def bound(function, flag):
     def decorator(func):
@@ -11,7 +14,7 @@ def bound(function, flag):
     return decorator
     
 
-@bound(zero_function, ZF)
+@bound(ff.zero_function, ZF)
 def func_xor(op1, op2):
     if len(op1) != len(op2):
         raise ValueError

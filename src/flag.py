@@ -6,3 +6,6 @@ class Flag:
     def __init__(self, name):
         self.name = name
         self.state = False
+
+
+ZF = Flag('ZF')
