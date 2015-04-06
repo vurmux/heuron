@@ -8,12 +8,8 @@ class Register:
         self.value = [0] * self.size
         
     def __str__(self):
-        return ('REG ' +
-                self.name +
-                ' [' +
-                str(self.size) +
-                ']' +
-                ': ' +
+        return (self.name +
+                ' ' +
                 ''.join(str(b) for b in self.value.__reversed__())
         )
     

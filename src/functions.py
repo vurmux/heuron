@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import flag-functions as ff
+import flag_functions as ff
 import flag
 
 
@@ -14,9 +14,9 @@ def bound(function, flag):
     return decorator
     
 
-@bound(ff.zero_function, ZF)
+@bound(ff.zero_function, flag.ZF)
 def func_xor(op1, op2):
     if len(op1) != len(op2):
         raise ValueError
-    res = [op1[i] ^ op2[i] for i in op1]
-    return (res, {})
+    res = [op1[i] ^ op2[i] for i in range(len(op1))]
+    return res
