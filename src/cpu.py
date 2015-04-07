@@ -11,9 +11,12 @@ class CPU:
 
     def __init__(self, **kwargs):
         self.name = kwargs['name']
-        self.instructions = {i.name: i for i in kwargs['instructions']}
-        self.flags = {f.name: f for f in kwargs['flags']}
-        self.registers = {r.name: r for r in kwargs['registers']}
+        if 'instructions' in kwargs:
+            self.instructions = {i.name: i for i in kwargs['instructions']}
+        if 'flags' in kwargs:
+            self.flags = {f.name: f for f in kwargs['flags']}
+        if 'registers ' in kwargs:
+            self.registers = {r.name: r for r in kwargs['registers']}
         
     def __str__(self):
         result = ''
