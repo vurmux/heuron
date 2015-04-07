@@ -1,5 +1,8 @@
 #!/usr/bin/python
 
+import json
+
+
 class Register:
 
     def __init__(self, name, size=32):
@@ -33,6 +36,17 @@ class Register:
         self.set_str_value(bin_value)
 
 
+def load_from_file(filename):
+    reg_file = open(filename)
+    reg_str = reg_file.read()
+    reg_file.close()
+    registers = json.loads(reg_str)
+    result = []
+    for register in registers:
+        result.append(Register(register['name'], register['size']))
+    return result
+    
+
 if __name__ == '__main__':
     ax = Register('AX')
     ax.set_str_value('101101101')
@@ -41,3 +55,4 @@ if __name__ == '__main__':
     print ax
     ax.reset()
     print ax
+    print [str(elem) for elem in load_from_file('../examples/x86/registers.json')]
