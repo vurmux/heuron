@@ -1,4 +1,86 @@
 [
-{ "name": "AL", "size": 8 },
-{ "name": "BL", "size": 8 }
+{
+    "name": "EAX",
+    "size": 32,
+    "subregisters": [
+	{
+	    "name": "AX",
+	    "size": 16,
+	    "range": "15-0"
+	},
+	{
+	    "name": "AL",
+	    "size": 8,
+	    "range": "7-0"
+	},
+	{
+	    "name": "AH",
+	    "size": 8,
+	    "range": "15-8"
+	}
+    ]
+},
+{
+    "name": "EBX",
+    "size": 32,
+    "subregisters": [
+	{
+	    "name": "BX",
+	    "size": 16,
+	    "range": "15-0"
+	},
+	{
+	    "name": "BL",
+	    "size": 8,
+	    "range": "7-0"
+	},
+	{
+	    "name": "BH",
+	    "size": 8,
+	    "range": "15-8"
+	}
+    ]
+},
+{
+    "name": "ECX",
+    "size": 32,
+    "subregisters": [
+	{
+	    "name": "CX",
+	    "size": 16,
+	    "range": "15-0"
+	},
+	{
+	    "name": "CL",
+	    "size": 8,
+	    "range": "7-0"
+	},
+	{
+	    "name": "CH",
+	    "size": 8,
+	    "range": "15-8"
+	}
+    ]
+},
+{
+    "name": "DAX",
+    "size": 32,
+    "subregisters": [
+	{
+	    "name": "DX",
+	    "size": 16,
+	    "range": "15-0"
+	},
+	{
+	    "name": "DL",
+	    "size": 8,
+	    "range": "7-0"
+	},
+	{
+	    "name": "DH",
+	    "size": 8,
+	    "range": "15-8"
+	}
+    ]
+}
 ]
