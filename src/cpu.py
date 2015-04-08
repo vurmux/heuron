@@ -15,7 +15,7 @@ class CPU:
             self.instructions = {i.name: i for i in kwargs['instructions']}
         if 'flags' in kwargs:
             self.flags = {f.name: f for f in kwargs['flags']}
-        if 'registers ' in kwargs:
+        if 'registers' in kwargs:
             self.registers = {r.name: r for r in kwargs['registers']}
         
     def __str__(self):
@@ -31,6 +31,12 @@ class CPU:
         
     def execute(self, i_name, reg1, reg2):
         self.instructions[i_name].execute(reg1, reg2)
+        
+    def load_registers(reg_array):
+        self.registers = {r.name: r for r in reg_array}
+        
+    def load_flags(flag_array):
+        self.flags = {f.name: f for f in flag_array}
 
 
 if __name__ == '__main__':
