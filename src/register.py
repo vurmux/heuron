@@ -35,6 +35,9 @@ class Register:
         bin_value = bin(value)[2: ]
         self.set_str_value(bin_value)
 
+    def get_joint(self, joint):
+        self.joint = joint
+        self.joint.j_to = self
 
 def load_from_file(filename):
     reg_file = open(filename)
