@@ -12,13 +12,8 @@ class Flag:
     def __str__(self):
         return self.name + ' ' + str(int(self.state))
         
-    def get_from_joint(self, joint):
+    def get_joint(self, joint):
         self.joint = joint
-        self.joint.j_from = self
-
-    def get_to_joint(self, joint):
-        self.joint = joint
-        self.joint.j_to = self
 
 
 def load_from_file(filename):

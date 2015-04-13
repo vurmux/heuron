@@ -5,6 +5,10 @@ class Joint:
     def __init__(self, j_from):
         self.j_from = j_from
         self.j_to = None
+
+    def connect(self, target):
+        self.j_to = target
+        target.get_joint(self)
         
     def bend(self, func):
         if not self.j_to:

@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+import joint
+
 
 class Instruction:
     
@@ -11,3 +13,6 @@ class Instruction:
         self.result = None
         result = self.function(op1, op2)
         return result
+
+    def get_joint(self, joint):
+        self.joint = joint
