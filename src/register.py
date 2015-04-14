@@ -34,6 +34,9 @@ class Register:
         self.reset()
         bin_value = bin(value)[2: ]
         self.set_str_value(bin_value)
+        
+    def get_int_value(self):
+        return sum(self.value[i] * 2**(i+1) for i in range(len(self.value)))
 
     def get_joint(self, joint):
         self.joint = joint
