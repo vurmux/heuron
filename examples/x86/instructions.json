@@ -1,0 +1,16 @@
+[
+{
+    "name": "XOR",
+    "mnemonic": "XOR $1, $2",
+    "operands": "($1, $2)",
+    "result": "$1"
+    "function": "func_xor"
+},
+{
+    "name": "NOP",
+    "mnemonic": "NOP",
+    "operands": "-",
+    "result": "-"
+    "function": "func_nop"
+}
+]
