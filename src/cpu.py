@@ -37,6 +37,9 @@ class CPU:
         
     def load_flags(flag_array):
         self.flags = {f.name: f for f in flag_array}
+        
+    def load_instructions(inst_array):
+        self.instructions = {i.name: i for i in inst_array}
 
 
 if __name__ == '__main__':
