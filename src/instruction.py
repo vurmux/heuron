@@ -11,7 +11,9 @@ class Instruction:
         self.operands = operands
         self.result = result
         self.function = function
-        self.bound = bound
+        self.joints = {}
+	for elem in bound.split(' '):
+            self.joints[elem] = Joint(self)
         
     def execute(self, *operands):
         self.result = None
