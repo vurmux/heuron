@@ -14,6 +14,12 @@ class Flag:
         
     def get_joint(self, joint):
         self.joint = joint
+        
+    def set(self):
+        self.state = True
+
+    def reset(self):
+        self.state = False
 
 
 def load_from_file(filename):
