@@ -13,8 +13,17 @@ class Instruction:
         self.function = function
         self.joints = {}
 	for elem in bound.split(' '):
-            self.joints[elem] = Joint(self)
-        
+            self.joints[elem] = joint.Joint(self)
+            
+    def check_correctness(self):
+        if self.operands != '-':
+            for operand in self.operands:
+                if operand not in self.mnemonic:
+                    return False
+        if self.result != '-' and self.result not in self.mnemonic:
+            return False
+        return True
+            
     def execute(self, *operands):
         self.result = None
         result = self.function(*operands)
