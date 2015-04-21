@@ -5,9 +5,10 @@ import json
 
 class Flag:
     
-    def __init__(self, name):
+    def __init__(self, name, function):
         self.name = name
         self.state = False
+        self.function = function
         
     def __str__(self):
         return self.name + ' ' + str(int(self.state))
@@ -29,8 +30,5 @@ def load_from_file(filename):
     flags = json.loads(flag_str)
     result = []
     for flag in flags:
-        result.append(Flag(flag['name']))
+        result.append(Flag(flag['name'], flag['function']))
     return result
-
-
-ZF = Flag('ZF')
