@@ -40,6 +40,16 @@ class CPU:
         
     def load_instructions(inst_array):
         self.instructions = {i.name: i for i in inst_array}
+        
+    def make_joint_topology(self):
+        for instruction in self.instructions:
+            for elem in instruction.joints:
+                if elem in self.flags:
+                    self.flags[elem].get_joint(instruction.joints[elem])
+                elif elem in self.registers:
+                    self.registers[elem].get_joint(instruction.joints[elem])
+                else:
+                    raise AttributeError
 
 
 if __name__ == '__main__':
