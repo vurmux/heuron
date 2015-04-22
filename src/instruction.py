@@ -29,7 +29,7 @@ class Instruction:
         result = self.function(*operands)
         return result
 
-    def get_joint(self, joint):
+    def set_joint(self, joint):
         self.joint = joint
 
 

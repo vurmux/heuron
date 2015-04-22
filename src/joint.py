@@ -8,7 +8,7 @@ class Joint:
 
     def connect(self, target):
         self.j_to = target
-        target.get_joint(self)
+        target.set_joint(self)
         
     def bend(self, func):
         if not self.j_to:

@@ -38,7 +38,7 @@ class Register:
     def get_int_value(self):
         return sum(self.value[i] * 2**(i+1) for i in range(len(self.value)))
 
-    def get_joint(self, joint):
+    def set_joint(self, joint):
         self.joint = joint
 
 
