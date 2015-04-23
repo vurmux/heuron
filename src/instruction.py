@@ -1,16 +1,18 @@
 #!/usr/bin/python
 
 import joint
+import functions
+import flag_functions
 
 
 class Instruction:
     
-    def __init__(self, name, mnemonic, operands, result, function, bound):
+    def __init__(self, name, mnemonic, operands, result, function_name, bound):
         self.name = name
         self.mnemonic = mnemonic
         self.operands = operands
         self.result = result
-        self.function = function
+        self.function_name = function_name
         self.joints = {}
 	for elem in bound.split(' '):
             self.joints[elem] = joint.Joint(self)
@@ -26,7 +28,9 @@ class Instruction:
             
     def execute(self, *operands):
         self.result = None
-        result = self.function(*operands)
+        result = getattr(functions, self.function_name)(*operands)
+        for joint_name in self.joints:
+            self.joints[joint_name].bend(getattr(flag_functions, self.function_name))
         return result
 
     def set_joint(self, joint):
