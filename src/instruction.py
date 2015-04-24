@@ -3,6 +3,7 @@
 import joint
 import functions
 import flag_functions
+import json
 
 
 class Instruction:

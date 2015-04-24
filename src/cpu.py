@@ -41,26 +41,30 @@ class CPU:
     def load_instructions(inst_array):
         self.instructions = {i.name: i for i in inst_array}
         
+    # TODO: Ugly code. Refactor it!
     def make_joint_topology(self):
         for instruction in self.instructions:
-            for elem in instruction.joints:
+            for elem in self.instructions[instruction].joints:
+                if elem == '-':
+                    continue
                 if elem in self.flags:
-                    self.flags[elem].get_joint(instruction.joints[elem])
+                    self.flags[elem].set_joint(self.instructions[instruction].joints[elem])
                 elif elem in self.registers:
-                    self.registers[elem].get_joint(instruction.joints[elem])
+                    self.registers[elem].set_joint(self.instructions[instruction].joints[elem])
                 else:
                     raise AttributeError
 
 
 if __name__ == '__main__':
-    XOR = instruction.Instruction('XOR', functions.func_xor)
-    ZF = flag.Flag('ZF')
-    AX = register.Register('AL', size=8)
+    cpu_registers = register.load_from_file('../examples/x86/registers.json')
+    cpu_instructions = instruction.load_from_file('../examples/x86/instructions.json')
+    cpu_flags = flag.load_from_file('../examples/x86/flags.json')
     
     cpu = CPU(
         name='x86',
-        instructions=[XOR, ],
-        flags=[ZF, ],
-        registers=[AX, ],
+        instructions=cpu_instructions,
+        flags=cpu_flags,
+        registers=cpu_registers,
     )
+    cpu.make_joint_topology()
     print cpu
