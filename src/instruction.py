@@ -18,6 +18,9 @@ class Instruction:
 	for elem in bound.split(' '):
             self.joints[elem] = joint.Joint(self)
             
+    def __str__(self):
+        return self.name + ' ' + self.mnemonic
+            
     def check_correctness(self):
         if self.operands != '-':
             for operand in self.operands:
