@@ -17,6 +17,7 @@ class CPU:
             self.flags = {f.name: f for f in kwargs['flags']}
         if 'registers' in kwargs:
             self.registers = {r.name: r for r in kwargs['registers']}
+        self.make_joint_topology()
         
     def __str__(self):
         result = ''
@@ -24,13 +25,15 @@ class CPU:
         result = result + 'REGISTERS:\n'
         for r_name in self.registers:
             result = result + str(self.registers[r_name]) + '\n'
-        result = result + str(self.flags) + '\n'
-        result = result + str(self.instructions) + '\n'
+        for f_name in self.flags:
+            result = result + str(self.flags[f_name]) + '\n'
+        for i_name in self.instructions:
+            result = result + str(self.instructions[i_name]) + '\n'
         result += '\n'
         return result
         
-    def execute(self, i_name, reg1, reg2):
-        self.instructions[i_name].execute(reg1, reg2)
+    def execute(self, i_name, *operands):
+        return self.instructions[i_name].execute(*operands)
         
     def load_registers(reg_array):
         self.registers = {r.name: r for r in reg_array}
@@ -66,5 +69,10 @@ if __name__ == '__main__':
         flags=cpu_flags,
         registers=cpu_registers,
     )
-    cpu.make_joint_topology()
+
+    cpu.registers['EAX'].set_int_value(415)
+    cpu.registers['EBX'].set_int_value(342)
+    print cpu
+    print '-' * 40
+    cpu.registers['EAX'].value = cpu.execute('XOR', cpu.registers['EAX'].value, cpu.registers['EBX'].value)
     print cpu

@@ -30,11 +30,12 @@ class Instruction:
             return False
         return True
             
+    # TODO: Ugly code. Refactor it!
     def execute(self, *operands):
-        self.result = None
         result = getattr(functions, self.function_name)(*operands)
         for joint_name in self.joints:
-            self.joints[joint_name].bend(getattr(flag_functions, self.function_name))
+            if self.joints[joint_name].j_to:
+                self.joints[joint_name].bend(getattr(flag_functions, self.joints[joint_name].j_to.function))
         return result
 
     def set_joint(self, joint):
