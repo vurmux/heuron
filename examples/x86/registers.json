@@ -63,7 +63,7 @@
     ]
 },
 {
-    "name": "DAX",
+    "name": "EDX",
     "size": 32,
     "subregisters": [
 	{
