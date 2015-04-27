@@ -11,7 +11,7 @@ class Instruction:
     def __init__(self, name, mnemonic, operands, result, function_name, bound):
         self.name = name
         self.mnemonic = mnemonic
-        self.operands = operands
+        self.operands = operands.split(' ')
         self.result = result
         self.function_name = function_name
         self.joints = {}
@@ -30,13 +30,17 @@ class Instruction:
             return False
         return True
             
-    # TODO: Ugly code. Refactor it!
     def execute(self, *operands):
-        result = getattr(functions, self.function_name)(*operands)
-        for joint_name in self.joints:
-            if self.joints[joint_name].j_to:
-                self.joints[joint_name].bend(getattr(flag_functions, self.joints[joint_name].j_to.function))
-        return result
+        if len(operands) != len(self.operands):
+            raise ValueError
+        operands_dict = dict(zip(self.operands, operands))
+        refined_operands = [op.value for op in operands]
+        result = getattr(functions, self.function_name)(*refined_operands)
+        if self.result:
+            operands_dict[self.result].value = result
+        for joint_name, joint in self.joints.iteritems():
+            if joint.j_to:
+                joint.bend(getattr(flag_functions, joint.j_to.function))
 
     def set_joint(self, joint):
         self.joint = joint

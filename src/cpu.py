@@ -17,6 +17,7 @@ class CPU:
             self.flags = {f.name: f for f in kwargs['flags']}
         if 'registers' in kwargs:
             self.registers = {r.name: r for r in kwargs['registers']}
+        self.joints = []
         self.make_joint_topology()
         
     def __str__(self):
@@ -29,7 +30,9 @@ class CPU:
             result = result + str(self.flags[f_name]) + '\n'
         for i_name in self.instructions:
             result = result + str(self.instructions[i_name]) + '\n'
-        result += '\n'
+        print self.joints
+        for j in self.joints:
+            result = result + str(j) + '\n'
         return result
         
     def execute(self, i_name, *operands):
@@ -50,10 +53,14 @@ class CPU:
             for elem in self.instructions[instruction].joints:
                 if elem == '-':
                     continue
+                # Replace set_joint to connect!!!
                 if elem in self.flags:
+                    self.instructions[instruction].joints[elem].connect(self.flags[elem])
                     self.flags[elem].set_joint(self.instructions[instruction].joints[elem])
+                    self.joints.append(self.flags[elem].joint)
                 elif elem in self.registers:
-                    self.registers[elem].set_joint(self.instructions[instruction].joints[elem])
+                    self.instructions[instruction].joints[elem].connect(self.registers[elem])
+                    self.joints.append(self.registers[elem].joint)
                 else:
                     raise AttributeError
 
@@ -73,6 +80,9 @@ if __name__ == '__main__':
     cpu.registers['EAX'].set_int_value(415)
     cpu.registers['EBX'].set_int_value(342)
     print cpu
-    print '-' * 40
-    cpu.registers['EAX'].value = cpu.execute('XOR', cpu.registers['EAX'].value, cpu.registers['EBX'].value)
+    print '-' * 40 + '\n'
+    cpu.execute('XOR', cpu.registers['EAX'], cpu.registers['EBX'])
+    print cpu
+    print '-' * 40 + '\n'
+    cpu.execute('XOR', cpu.registers['EAX'], cpu.registers['EAX'])
     print cpu

@@ -17,4 +17,5 @@ class Joint:
     def bend(self, func):
         if not self.j_to:
             raise ValueError
-        func(self.j_to)
+        # Replace to working function
+        #func(self.j_to)
