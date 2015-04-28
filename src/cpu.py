@@ -47,20 +47,18 @@ class CPU:
     def load_instructions(inst_array):
         self.instructions = {i.name: i for i in inst_array}
         
-    # TODO: Ugly code. Refactor it!
     def make_joint_topology(self):
         for instruction in self.instructions:
-            for elem in self.instructions[instruction].joints:
-                if elem == '-':
+            for joint_name, joint in self.instructions[instruction].joints.iteritems():
+                if joint_name == '-':
                     continue
-                # Replace set_joint to connect!!!
-                if elem in self.flags:
-                    self.instructions[instruction].joints[elem].connect(self.flags[elem])
-                    self.flags[elem].set_joint(self.instructions[instruction].joints[elem])
-                    self.joints.append(self.flags[elem].joint)
-                elif elem in self.registers:
-                    self.instructions[instruction].joints[elem].connect(self.registers[elem])
-                    self.joints.append(self.registers[elem].joint)
+                if joint_name in self.flags:
+                    joint.connect(self.flags[joint_name])
+                    self.flags[joint_name].set_joint(joint)
+                    self.joints.append(self.flags[joint_name].joint)
+                elif joint_name in self.registers:
+                    joint.connect(self.registers[joint_name])
+                    self.joints.append(self.registers[joint_name].joint)
                 else:
                     raise AttributeError
 
