@@ -2,6 +2,7 @@
 
 import joint
 import functions
+import joint_functions
 import flag_functions
 import json
 
@@ -17,10 +18,10 @@ class Instruction:
         self.joints = {}
 	for elem in bound.split(' '):
             self.joints[elem] = joint.Joint(self)
-            
+
     def __str__(self):
         return self.name + ' ' + self.mnemonic
-            
+
     def check_correctness(self):
         if self.operands != '-':
             for operand in self.operands:
@@ -29,7 +30,7 @@ class Instruction:
         if self.result != '-' and self.result not in self.mnemonic:
             return False
         return True
-            
+
     def execute(self, *operands):
         if len(operands) != len(self.operands):
             raise ValueError
@@ -40,7 +41,14 @@ class Instruction:
             operands_dict[self.result].value = result
         for joint_name, joint in self.joints.iteritems():
             if joint.j_to:
-                joint.bend(getattr(flag_functions, joint.j_to.function))
+                # Only to flags
+                #joint.bend(getattr(flag_functions, joint.j_to.function))
+                joint.bend(
+                    joint_functions.set_flag,
+                    joint.j_to,
+                    getattr(flag_functions, joint.j_to.function),
+                    result
+                )
 
     def set_joint(self, joint):
         self.joint = joint

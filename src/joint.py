@@ -14,8 +14,7 @@ class Joint:
         self.j_to = target
         target.set_joint(self)
         
-    def bend(self, func):
+    def bend(self, func, *args):
         if not self.j_to:
             raise ValueError
-        # Replace to working function
-        #func(self.j_to)
+        func(*args)
