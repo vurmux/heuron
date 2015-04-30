@@ -5,6 +5,7 @@ import functions
 import joint_functions
 import flag_functions
 import json
+import flag
 
 
 class Instruction:
@@ -40,9 +41,7 @@ class Instruction:
         if self.result:
             operands_dict[self.result].value = result
         for joint_name, joint in self.joints.iteritems():
-            if joint.j_to:
-                # Only to flags
-                #joint.bend(getattr(flag_functions, joint.j_to.function))
+            if isinstance(joint.j_to, flag.Flag):
                 joint.bend(
                     joint_functions.set_flag,
                     joint.j_to,
