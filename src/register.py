@@ -11,6 +11,18 @@ class Register:
         self.value = [0] * self.size
         
     def __str__(self):
+        hex_list = []
+        result = ''
+        for b in self.value:
+            if len(hex_list) < 3:
+                hex_list.append(str(b))
+            else:
+                hex_list.append(str(b))
+                result += hex(int('0b' + ''.join(hex_list), 2))[-1]
+                hex_list = []
+        return result[::-1].upper()
+                
+    def binary_string(self):
         return (self.name +
                 ' ' +
                 ''.join(str(b) for b in self.value.__reversed__())
