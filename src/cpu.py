@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+import re
+
 import flag
 import flag_functions
 import functions
@@ -62,8 +64,8 @@ class CPU:
                 else:
                     raise AttributeError
                 
-    def match_instruction(string):
-        instructions_regexps = {i.mnemonic: i for i in self.instructions}
+    def match_instruction(self, string):
+        instructions_regexps = {i.mnemonic: i for i in self.instructions.values()}
         for raw_regexp in instructions_regexps:
             regexp = re.compile(re.sub(r'\$\d+', '.*', raw_regexp))
             if regexp.match(string):
@@ -92,3 +94,8 @@ if __name__ == '__main__':
     print '-' * 40 + '\n'
     cpu.execute('XOR', cpu.registers['EAX'], cpu.registers['EAX'])
     print cpu
+    print '-' * 40 + '\n'
+    print cpu.match_instruction('XOR AX, BX')
+    print cpu.match_instruction('XOR RAX, [RBX+1]')
+    print cpu.match_instruction('NOP')
+    print cpu.match_instruction('QWERTY A, B')
