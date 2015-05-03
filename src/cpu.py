@@ -61,6 +61,14 @@ class CPU:
                     self.joints.append(self.registers[joint_name].joint)
                 else:
                     raise AttributeError
+                
+    def match_instruction(string):
+        instructions_regexps = {i.mnemonic: i for i in self.instructions}
+        for raw_regexp in instructions_regexps:
+            regexp = re.compile(re.sub(r'\$\d+', '.*', raw_regexp))
+            if regexp.match(string):
+                return instructions_regexps[raw_regexp]
+        return False
 
 
 if __name__ == '__main__':
