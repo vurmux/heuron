@@ -5,7 +5,7 @@ import cpu
 
 class Emulator:
     
-    def __init__(self, cpu, execution_limit, ip_register='IP'):
+    def __init__(self, cpu, execution_limit, ip_register='EIP'):
         self.cpu = cpu
         self.program = []
         self.execution_limit = execution_limit
