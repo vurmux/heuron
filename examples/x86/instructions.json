@@ -14,5 +14,13 @@
     "result": "-",
     "function": "func_nop",
     "bound": "-"
+},
+{
+    "name": "JMP",
+    "mnemonic": "JMP $1 -> $2",
+    "operands": "$1 $2",
+    "result": "-",
+    "function": "func_jmp",
+    "bound": "-"
 }
 ]
