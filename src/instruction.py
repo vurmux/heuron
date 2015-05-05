@@ -1,11 +1,14 @@
 #!/usr/bin/python
 
+
+import json
+
 import joint
 import functions
 import joint_functions
 import flag_functions
-import json
 import flag
+import register
 
 
 class Instruction:
@@ -21,7 +24,7 @@ class Instruction:
             self.joints[elem] = joint.Joint(self)
 
     def __str__(self):
-        return self.name + ' ' + self.mnemonic
+        return self.mnemonic
 
     def check_correctness(self):
         if self.operands != '-':
@@ -36,9 +39,16 @@ class Instruction:
         if len(operands) != len(self.operands):
             raise ValueError
         operands_dict = dict(zip(self.operands, operands))
-        refined_operands = [op.value for op in operands]
+        refined_operands = []
+        for op in operands:
+            # FIXME: Dirty hack for JMP instructions
+            if isinstance(op, register.Register) and self.name != 'JMP':
+                refined_operands.append(op.value)
+            else:
+                refined_operands.append(op)
+        #refined_operands = [op.value for op in operands if isinstance(op, register.Register) else op]
         result = getattr(functions, self.function_name)(*refined_operands)
-        if self.result:
+        if self.result != '-':
             operands_dict[self.result].value = result
         for joint_name, joint in self.joints.iteritems():
             if isinstance(joint.j_to, flag.Flag):

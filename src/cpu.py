@@ -30,7 +30,7 @@ class CPU:
         result = result + 'CPU: ' + self.name + '\n'
         result = result + 'REGISTERS:\n'
         for r_name in self.registers:
-            result = result + str(self.registers[r_name]) + '\n'
+            result = result + r_name + ': ' + str(self.registers[r_name]) + '\n'
         for f_name in self.flags:
             result = result + str(self.flags[f_name]) + '\n'
         for i_name in self.instructions:
@@ -43,7 +43,9 @@ class CPU:
     def execute(self, i_name, *operands):
         self.instructions[i_name].execute(*operands)
         if self.ip_register:
-            self.ip_register.value = functions.inc(self.ip_register.value)
+            self.registers[self.ip_register].value = functions.func_inc(
+                self.registers[self.ip_register].value
+            )
         
     def load_registers(reg_array):
         self.registers = {r.name: r for r in reg_array}
@@ -99,6 +101,9 @@ if __name__ == '__main__':
     print cpu
     print '-' * 40 + '\n'
     cpu.execute('XOR', cpu.registers['EAX'], cpu.registers['EAX'])
+    print cpu
+    print '-' * 40 + '\n'
+    cpu.execute('JMP', cpu.registers['EIP'], 0)
     print cpu
     print '-' * 40 + '\n'
     print cpu.match_instruction('XOR AX, BX')
