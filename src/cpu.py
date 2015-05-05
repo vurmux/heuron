@@ -19,6 +19,9 @@ class CPU:
             self.flags = {f.name: f for f in kwargs['flags']}
         if 'registers' in kwargs:
             self.registers = {r.name: r for r in kwargs['registers']}
+        self.ip_register = None
+        if 'ip_register' in kwargs:
+            self.ip_register = kwargs['ip_register']
         self.joints = []
         self.make_joint_topology()
         
@@ -38,7 +41,9 @@ class CPU:
         return result
         
     def execute(self, i_name, *operands):
-        return self.instructions[i_name].execute(*operands)
+        self.instructions[i_name].execute(*operands)
+        if self.ip_register:
+            self.ip_register.value = functions.inc(self.ip_register.value)
         
     def load_registers(reg_array):
         self.registers = {r.name: r for r in reg_array}
@@ -83,6 +88,7 @@ if __name__ == '__main__':
         instructions=cpu_instructions,
         flags=cpu_flags,
         registers=cpu_registers,
+        ip_register='EIP',
     )
 
     cpu.registers['EAX'].set_int_value(415)
