@@ -69,3 +69,6 @@ def func_dec(op):
     int_op = list_to_int(op)
     int_result = int_op - 1
     return int_to_list(int_result)
+
+def func_jmp(ip, label):
+    ip.set_int_value(int(label))
