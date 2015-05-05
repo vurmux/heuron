@@ -4,7 +4,7 @@
 # -- General functions ---
 
 def list_to_int(lst):
-    return sum(lst[i] * 2**(i+1) for i in range(len(lst)))
+    return sum(lst[i] * 2**i for i in range(len(lst)))
 
 def int_to_list(value):
     bin_value = bin(value)[2: ]

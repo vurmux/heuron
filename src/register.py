@@ -18,8 +18,10 @@ class Register:
                 hex_list.append(str(b))
             else:
                 hex_list.append(str(b))
-                result += hex(int('0b' + ''.join(hex_list), 2))[-1]
+                result += hex(int('0b' + ''.join(hex_list.__reversed__()), 2))[-1]
                 hex_list = []
+        if hex_list:
+            result += hex(int('0b' + ''.join(hex_list.__reversed__()), 2))[-1]
         return result[::-1].upper()
                 
     def binary_string(self):
