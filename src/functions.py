@@ -72,3 +72,6 @@ def func_dec(op):
 
 def func_jmp(ip, label):
     ip.set_int_value(int(label))
+
+def func_mov(target, value):
+    target = value
