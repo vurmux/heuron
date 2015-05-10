@@ -68,13 +68,37 @@ class ArithmeticInstruction(Instruction):
 
 
 class DataTransferInstruction(Instruction):
-    pass
+    
+    def __init__(self, name, mnemonic, operands, result, function_name, bound):
+        super(ControlTransferInstruction, self).__init__(
+            name,
+            mnemonic,
+            operands,
+            result,
+            function_name,
+            bound
+        )
+        
+    def execute(self, *operands):
+       if len(operands) != len(self.operands):
+           raise ValueError
+       operands_dict = dict(zip(self.operands, operands))
+       refined_operands = []
+       getattr(functions, self.function_name)(*operands)
+       for joint_name, joint in self.joints.iteritems():
+           if isinstance(joint.j_to, flag.Flag):
+               joint.bend(
+                   joint_functions.set_flag,
+                   joint.j_to,
+                   getattr(flag_functions, joint.j_to.function),
+                   result
+               )
 
 
 class ControlTransferInstruction(Instruction):
     
     def __init__(self, name, mnemonic, operands, result, function_name, bound):
-        super(DataTransferInstruction, self).__init__(
+        super(ControlTransferInstruction, self).__init__(
             name,
             mnemonic,
             operands,
@@ -106,14 +130,49 @@ def load_from_file(filename):
     instructions = json.loads(inst_str)
     result = []
     for instruction in instructions:
-        result.append(
-            Instruction(
-                instruction['name'],
-                instruction['mnemonic'],
-                instruction['operands'],
-                instruction['result'],
-                instruction['function'],
-                instruction['bound']
+        if instruction['type'] == 'arithmetic':
+            result.append(
+                ArithmeticInstruction(
+                    instruction['name'],
+                    instruction['mnemonic'],
+                    instruction['operands'],
+                    instruction['result'],
+                    instruction['function'],
+                    instruction['bound']
+                )
             )
-        )
+        if instruction['type'] == 'control_transfer':
+            result.append(
+                ControlTransferInstruction(
+                    instruction['name'],
+                    instruction['mnemonic'],
+                    instruction['operands'],
+                    instruction['result'],
+                    instruction['function'],
+                    instruction['bound']
+                )
+            )
+        if instruction['type'] == 'data_transfer':
+            result.append(
+                DataTransferInstruction(
+                    instruction['name'],
+                    instruction['mnemonic'],
+                    instruction['operands'],
+                    instruction['result'],
+                    instruction['function'],
+                    instruction['bound']
+                )
+            )
+        if instruction['type'] == 'other':
+            result.append(
+                Instruction(
+                    instruction['name'],
+                    instruction['mnemonic'],
+                    instruction['operands'],
+                    instruction['result'],
+                    instruction['function'],
+                    instruction['bound']
+                )
+            )
+
     return result
