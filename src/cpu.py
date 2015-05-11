@@ -106,6 +106,9 @@ if __name__ == '__main__':
     cpu.execute('JMP', cpu.registers['EIP'], 0)
     print cpu
     print '-' * 40 + '\n'
+    cpu.execute('MOV', cpu.registers['EAX'].value, cpu.registers['EBX'].value)
+    print cpu
+    print '-' * 40 + '\n'
     print cpu.match_instruction('XOR AX, BX')
     print cpu.match_instruction('XOR RAX, [RBX+1]')
     print cpu.match_instruction('NOP')
