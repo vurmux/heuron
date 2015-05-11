@@ -74,4 +74,7 @@ def func_jmp(ip, label):
     ip.set_int_value(int(label))
 
 def func_mov(target, value):
-    target = value
+    if len(target) != len(value):
+        raise ValueError
+    for i, _ in enumerate(target):
+        target[i] = value[i]
