@@ -9,11 +9,20 @@
     "type": "arithmetic"
 },
 {
-    "name": "MOV",
+    "name": "MOVR",
     "mnemonic": "MOV $1, $2",
     "operands": "$1 $2",
     "result": "-",
-    "function": "func_mov",
+    "function": "func_mov_to_reg",
+    "bound": "-",
+    "type": "data_transfer"
+},
+{
+    "name": "MOVM",
+    "mnemonic": "MOV $1[$2], $3",
+    "operands": "$1 $2 $3",
+    "result": "-",
+    "function": "func_mov_to_mem",
     "bound": "-",
     "type": "data_transfer"
 },
