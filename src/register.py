@@ -30,6 +30,22 @@ class Register:
                 ''.join(str(b) for b in self.value.__reversed__())
         )
     
+    def get_byte_list_value(self):
+        byte = 0
+        byte_len = 0
+        result = []
+        for b in self.value:
+            if byte_len < 7:
+                byte += b * 2**(byte_len)
+                byte_len += 1
+            else:
+                result.append(int(byte))
+                byte_len = 0
+                byte = 0
+        if byte_len:
+            result.append(int(byte))
+        return result
+    
     def reset(self):
         self.value = [0] * self.size
     
