@@ -7,6 +7,7 @@ import flag_functions
 import functions
 import instruction
 import register
+import memory
 
 
 class CPU:
@@ -19,6 +20,8 @@ class CPU:
             self.flags = {f.name: f for f in kwargs['flags']}
         if 'registers' in kwargs:
             self.registers = {r.name: r for r in kwargs['registers']}
+        if 'memory' in kwargs:
+            self.memory = kwargs['memory']
         self.ip_register = None
         if 'ip_register' in kwargs:
             self.ip_register = kwargs['ip_register']
@@ -84,6 +87,8 @@ if __name__ == '__main__':
     cpu_registers = register.load_from_file('../examples/x86/registers.json')
     cpu_instructions = instruction.load_from_file('../examples/x86/instructions.json')
     cpu_flags = flag.load_from_file('../examples/x86/flags.json')
+    cpu_memory = memory.MemoryPage(2048)
+    cpu_memory.write_ord(0, eval(open('../examples/memory.txt').read()))
     
     cpu = CPU(
         name='x86',
@@ -91,6 +96,7 @@ if __name__ == '__main__':
         flags=cpu_flags,
         registers=cpu_registers,
         ip_register='EIP',
+        memory=cpu_memory
     )
 
     cpu.registers['EAX'].set_int_value(415)
@@ -106,9 +112,12 @@ if __name__ == '__main__':
     cpu.execute('JMP', cpu.registers['EIP'], 0)
     print cpu
     print '-' * 40 + '\n'
-    cpu.execute('MOV', cpu.registers['EAX'].value, cpu.registers['EBX'].value)
+    cpu.execute('MOVR', cpu.registers['EAX'], cpu.registers['EBX'])
     print cpu
     print '-' * 40 + '\n'
+    print cpu.memory.get_list(0, 4)
+    cpu.execute('MOVM', cpu.memory, 0, cpu.registers['EBX'].get_byte_list_value())
+    print cpu.memory.get_list(0, 4)
     print cpu.match_instruction('XOR AX, BX')
     print cpu.match_instruction('XOR RAX, [RBX+1]')
     print cpu.match_instruction('NOP')
