@@ -70,11 +70,17 @@ def func_dec(op):
     int_result = int_op - 1
     return int_to_list(int_result)
 
+# --- Other functions ---
+
 def func_jmp(ip, label):
     ip.set_int_value(int(label))
 
-def func_mov(target, value):
-    if len(target) != len(value):
+def func_mov_to_reg(target, value):
+    if len(target.value) != len(value.value):
         raise ValueError
-    for i, _ in enumerate(target):
-        target[i] = value[i]
+    for i, _ in enumerate(target.value):
+        target.value[i] = value.value[i]
+
+def func_mov_to_mem(memory, address, value):
+    for i, _ in enumerate(value):
+        memory.value[address + i] = value[i]

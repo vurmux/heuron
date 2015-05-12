@@ -104,6 +104,13 @@ class DataTransferInstruction(Instruction):
     def execute(self, *operands):
         if len(operands) != len(self.operands):
             raise ValueError
+        size = None
+        for operand in operands:
+            if isinstance(operand, register.Register):
+                size = operand.size
+        # Hack - need at least one register
+        #if not size:
+        #    raise AttributeError
         operands_dict = dict(zip(self.operands, operands))
         getattr(functions, self.function_name)(*operands)
         for joint_name, joint in self.joints.iteritems():
