@@ -10,6 +10,7 @@ import flag_functions
 import functions
 import instruction
 import register
+import memory
 
 def create_subwindow(x, y, w, h, border_list, header):
     res = stdscr.subwin(12,14,0,0)
@@ -60,22 +61,25 @@ if __name__=='__main__':
             'MEMO DUMP'
         )
 
-        XOR = instruction.Instruction('XOR', functions.func_xor)
-        ZF = flag.ZF
-        AL = register.Register('AL', size=8)
-        BL = register.Register('BL', size=8)
+        cpu_registers = register.load_from_file('./examples/x86/registers.json')
+        cpu_instructions = instruction.load_from_file('./examples/x86/instructions.json')
+        cpu_flags = flag.load_from_file('./examples/x86/flags.json')
+        cpu_memory = memory.MemoryPage(2048)
+        cpu_memory.write_ord(0, eval(open('./examples/memory.txt').read()))
 
         cpu = cpu.CPU(
             name='x86',
-            instructions=[XOR, ],
-            flags=[ZF, ],
-            registers=[AL, BL],
+            instructions=cpu_instructions,
+            flags=cpu_flags,
+            registers=cpu_registers,
+            ip_register='EIP',
+            memory=cpu_memory
         )
         # Write registers from file
         registers = cpu.registers
         i = 3
         for reg in registers:
-            reg_window.addstr(i, 1, str(registers[reg]))
+            reg_window.addstr(i, 1, reg + ' ' + str(registers[reg]))
             i += 1
         
         flags = cpu.flags
@@ -87,44 +91,6 @@ if __name__=='__main__':
         screen.refresh()
         c = screen.getch()
 
-        functions.func_xor(cpu.registers['AL'].value, cpu.registers['AL'].value)    
-        
-        flags = cpu.flags
-        i = 3
-        for flag in flags:
-            flags_window.addstr(i, 1, str(flags[flag]))
-            i += 1
-        screen.refresh()
-
-        c = screen.getch()
-
-        cpu.registers['AL'].value = [0, 1, 1, 1, 0, 1, 0, 0]
-        cpu.registers['BL'].value = [1, 0, 1, 0, 0, 1, 1, 0]
-        registers = cpu.registers
-        i = 3
-        for reg in registers:
-            reg_window.addstr(i, 1, str(registers[reg]))
-            i += 1
-        screen.refresh()
-
-        c = screen.getch()
- 
-        cpu.registers['AL'].value = functions.func_xor(cpu.registers['AL'].value, cpu.registers['BL'].value)    
-        registers = cpu.registers
-        i = 3
-        for reg in registers:
-            reg_window.addstr(i, 1, str(registers[reg]))
-            i += 1
-        flags = cpu.flags
-        i = 3
-        for flag in flags:
-            flags_window.addstr(i, 1, str(flags[flag]))
-            i += 1
-        screen.refresh()
-
-        c = screen.getch()
-
-        
         #main(stdscr)                    # Enter the main loop
         # Set everything back to normal
         stdscr.keypad(0)
