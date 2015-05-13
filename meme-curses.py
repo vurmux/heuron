@@ -22,6 +22,39 @@ def create_subwindow(x, y, w, h, border_list, header):
     res.hline(2, 1, chr(45), w-2)
     return res
 
+def create_suface():
+    reg_window = create_subwindow(
+        0, 0, 18, 12,
+        [0, 0, 0, 0,
+         0, curses.ACS_TTEE, curses.ACS_PLUS, curses.ACS_PLUS],
+        'REGISTERS')
+    flags_window = create_subwindow(
+        0, 11, 18, 12,
+        [0, 0, 0, 0,
+         curses.ACS_PLUS, curses.ACS_PLUS, 0, curses.ACS_BTEE],
+        'FLAGS'
+    )
+    instr_window = create_subwindow(
+        17, 0, 20, 12,
+        [0, 0, 0, 0,
+         curses.ACS_TTEE, curses.ACS_TTEE, curses.ACS_PLUS, curses.ACS_RTEE],
+        'INSTRUCTIONS'
+    )
+    asm_window = create_subwindow(
+        17, 11, 20, 12,
+        [0, 0, 0, 0,
+         curses.ACS_PLUS, curses.ACS_RTEE, curses.ACS_BTEE, curses.ACS_BTEE],
+        'ASSEMBLER'
+    )
+    memo_window = create_subwindow(
+        36, 0, 43, 23,
+        [0, 0, 0, 0,
+         curses.ACS_TTEE, 0, curses.ACS_BTEE, 0],
+        'MEMO DUMP'
+    )
+    return (reg_window, flags_window, instr_window, asm_window, memo_window)
+
+
 if __name__=='__main__':
     try:
         stdscr=curses.initscr()
@@ -31,35 +64,11 @@ if __name__=='__main__':
         screen.refresh()
         stdscr.keypad(1)
 
-        reg_window = create_subwindow(
-            0, 0, 18, 12,
-            [0, 0, 0, 0,
-             0, curses.ACS_TTEE, curses.ACS_PLUS, curses.ACS_PLUS],
-            'REGISTERS')
-        flags_window = create_subwindow(
-            0, 11, 18, 12,
-            [0, 0, 0, 0,
-             curses.ACS_PLUS, curses.ACS_PLUS, 0, curses.ACS_BTEE],
-            'FLAGS'
-        )
-        instr_window = create_subwindow(
-            17, 0, 20, 12,
-            [0, 0, 0, 0,
-             curses.ACS_TTEE, curses.ACS_TTEE, curses.ACS_PLUS, curses.ACS_RTEE],
-            'INSTRUCTIONS'
-        )
-        asm_window = create_subwindow(
-            17, 11, 20, 12,
-            [0, 0, 0, 0,
-             curses.ACS_PLUS, curses.ACS_RTEE, curses.ACS_BTEE, curses.ACS_BTEE],
-            'ASSEMBLER'
-        )
-        memo_window = create_subwindow(
-            36, 0, 43, 23,
-            [0, 0, 0, 0,
-             curses.ACS_TTEE, 0, curses.ACS_BTEE, 0],
-            'MEMO DUMP'
-        )
+        (reg_window,
+         flags_window,
+         instr_window,
+         asm_window,
+         memo_window) = create_suface()
 
         cpu_registers = register.load_from_file('./examples/x86/registers.json')
         cpu_instructions = instruction.load_from_file('./examples/x86/instructions.json')
@@ -75,7 +84,7 @@ if __name__=='__main__':
             ip_register='EIP',
             memory=cpu_memory
         )
-        # Write registers from file
+        
         registers = cpu.registers
         i = 3
         for reg in registers:
@@ -91,15 +100,11 @@ if __name__=='__main__':
         screen.refresh()
         c = screen.getch()
 
-        #main(stdscr)                    # Enter the main loop
-        # Set everything back to normal
-        stdscr.keypad(0)
-        curses.echo() ; curses.nocbreak()
-        curses.endwin()                 # Terminate curses
-    except:
-        # In the event of an error, restore the terminal
-        # to a sane state.
         stdscr.keypad(0)
         curses.echo() ; curses.nocbreak()
         curses.endwin()
-        traceback.print_exc()           # Print the exception
+    except:
+        stdscr.keypad(0)
+        curses.echo() ; curses.nocbreak()
+        curses.endwin()
+        traceback.print_exc()
