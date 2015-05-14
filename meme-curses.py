@@ -54,6 +54,25 @@ def create_suface():
     )
     return (reg_window, flags_window, instr_window, asm_window, memo_window)
 
+def update_registers(reg_window, registers):
+    i = 3
+    for reg in registers:
+        reg_window.addstr(i, 1, reg + ' ' + str(registers[reg]))
+        i += 1
+        
+def update_flags(flags_window, flags):
+    i = 3
+    for flag in flags:
+        flags_window.addstr(i, 1, str(flags[flag]))
+        i += 1
+
+def refresh_cpu_screen(cpu, screen, **kwargs):
+    registers = cpu.registers
+    flags = cpu.flags
+    update_registers(kwargs['reg_window'], registers)
+    update_flags(kwargs['flags_window'], flags)
+    screen.refresh()
+
 
 if __name__=='__main__':
     try:
@@ -84,21 +103,23 @@ if __name__=='__main__':
             ip_register='EIP',
             memory=cpu_memory
         )
-        
-        registers = cpu.registers
-        i = 3
-        for reg in registers:
-            reg_window.addstr(i, 1, reg + ' ' + str(registers[reg]))
-            i += 1
-        
-        flags = cpu.flags
-        i = 3
-        for flag in flags:
-            flags_window.addstr(i, 1, str(flags[flag]))
-            i += 1
             
-        screen.refresh()
-        c = screen.getch()
+        program = [
+            "cpu.registers['EAX'].set_int_value(415)",
+            "cpu.registers['EBX'].set_int_value(342)",
+            "cpu.execute('XOR', cpu.registers['EAX'], cpu.registers['EBX'])",
+            "cpu.execute('XOR', cpu.registers['EAX'], cpu.registers['EAX'])",
+        ]
+        
+        for instruction in program:
+            eval(instruction)
+            refresh_cpu_screen(
+                cpu,
+                screen,
+                reg_window=reg_window,
+                flags_window=flags_window
+            )
+            c = screen.getch()
 
         stdscr.keypad(0)
         curses.echo() ; curses.nocbreak()
