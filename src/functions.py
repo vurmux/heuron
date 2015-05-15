@@ -76,11 +76,16 @@ def func_jmp(ip, label):
     ip.set_int_value(int(label))
 
 def func_mov_to_reg(target, value):
-    if len(target.value) != len(value.value):
-        raise ValueError
-    for i, _ in enumerate(target.value):
-        target.value[i] = value.value[i]
+    if isinstance(value, list):
+        hack_value = value
+    else:
+        hack_value = value.value
+    target.set_int_value(list_to_int(hack_value))
 
 def func_mov_to_mem(memory, address, value):
-    for i, _ in enumerate(value):
-        memory.value[address + i] = value[i]
+    if isinstance(value, list):
+        hack_value = value
+    else:
+        hack_value = value.value
+    for i, _ in enumerate(hack_value):
+        memory.value[address + i] = hack_value[i]
