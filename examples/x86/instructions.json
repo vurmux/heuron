@@ -9,6 +9,33 @@
     "type": "arithmetic"
 },
 {
+    "name": "ADD",
+    "mnemonic": "ADD $1, $2",
+    "operands": "$1 $2",
+    "result": "$1",
+    "function": "func_add",
+    "bound": "ZF",
+    "type": "arithmetic"
+},
+{
+    "name": "INC",
+    "mnemonic": "INC $1",
+    "operands": "$1",
+    "result": "$1",
+    "function": "func_inc",
+    "bound": "ZF",
+    "type": "arithmetic"
+},
+{
+    "name": "DEC",
+    "mnemonic": "DEC $1",
+    "operands": "$1",
+    "result": "$1",
+    "function": "func_dec",
+    "bound": "ZF",
+    "type": "arithmetic"
+},
+{
     "name": "MOVR",
     "mnemonic": "MOV $1, $2",
     "operands": "$1 $2",
