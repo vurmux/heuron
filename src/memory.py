@@ -2,7 +2,7 @@
 
 
 import string
-
+import functions
 
 class MemoryPage:
     
@@ -22,7 +22,22 @@ class MemoryPage:
                 result += '\n'
                 pos = 0
         return result
-    
+
+    def list(self):
+        width = 40
+        pos = 0
+        result = []
+        temp = ''
+        for byte in self.value:
+            # [:-5] cuts \t\n\r\x0b\x0c
+            temp += chr(byte) if chr(byte) in string.printable[:-5] else '.'
+            pos += 1
+            if pos == width:
+                result.append(temp)
+                temp = ''
+                pos = 0
+        return result
+
     def write_chr(self, address=0, data_string=''):
         writing_string = data_string[:self.size-address-len(data_string)]
         pos = address
@@ -31,7 +46,7 @@ class MemoryPage:
             pos += 1
             
     def write_ord(self, address=0, data_list=[]):
-        writing_list = data_list[:self.size-address-len(data_list)]
+        writing_list = data_list[:self.size-address]
         pos = address
         for byte in writing_list:
             self.value[pos] = byte
@@ -43,6 +58,9 @@ class MemoryPage:
     def get_int(self, address, length):
         target_list = self.get_list(address, length)
         return sum(target_list[::-1][i] * 255**i for i in range(len(target_list)))
+    
+    def get_bin(self, address, byte_length):
+        return functions.int_to_list(self.get_int(address, byte_length))
 
 
 class Memory:
