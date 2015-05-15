@@ -66,11 +66,18 @@ def update_flags(flags_window, flags):
         flags_window.addstr(i, 1, str(flags[flag]))
         i += 1
 
+def update_memory(memo_window, memory):
+    i = 3
+    for line in memory.list():
+        memo_window.addstr(i, 1, line)
+        i += 1
+        if i == 22:
+            break
+
 def refresh_cpu_screen(cpu, screen, **kwargs):
-    registers = cpu.registers
-    flags = cpu.flags
-    update_registers(kwargs['reg_window'], registers)
-    update_flags(kwargs['flags_window'], flags)
+    update_registers(kwargs['reg_window'], cpu.registers)
+    update_flags(kwargs['flags_window'], cpu.flags)
+    update_memory(kwargs['memo_window'], cpu.memory)
     screen.refresh()
 
 
@@ -93,7 +100,8 @@ if __name__=='__main__':
         cpu_instructions = instruction.load_from_file('./examples/x86/instructions.json')
         cpu_flags = flag.load_from_file('./examples/x86/flags.json')
         cpu_memory = memory.MemoryPage(2048)
-        cpu_memory.write_ord(0, eval(open('./examples/memory.txt').read()))
+        loaded_memory = eval(open('./examples/memory.txt').read())
+        cpu_memory.write_ord(0, loaded_memory)
 
         cpu = cpu.CPU(
             name='x86',
@@ -105,10 +113,11 @@ if __name__=='__main__':
         )
             
         program = [
-            "cpu.registers['EAX'].set_int_value(415)",
-            "cpu.registers['EBX'].set_int_value(342)",
+            "cpu.registers['ECX'].set_int_value(74)",
+            "cpu.registers['ECX'].set_int_value(115)",
             "cpu.execute('XOR', cpu.registers['EAX'], cpu.registers['EBX'])",
             "cpu.execute('XOR', cpu.registers['EAX'], cpu.registers['EAX'])",
+            "cpu.execute('MOVR', cpu.registers['EAX'], cpu.memory.get_bin(cpu.registers['EAX'].get_int_value(), 4))",
         ]
         
         for instruction in program:
@@ -117,7 +126,8 @@ if __name__=='__main__':
                 cpu,
                 screen,
                 reg_window=reg_window,
-                flags_window=flags_window
+                flags_window=flags_window,
+                memo_window=memo_window
             )
             c = screen.getch()
 
