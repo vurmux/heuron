@@ -83,6 +83,7 @@ class ArithmeticInstruction(Instruction):
         result = getattr(functions, self.function_name)(*refined_operands)
         if self.result:
             operands_dict[self.result].value = result
+            operands_dict[self.result].fit()
         for joint_name, joint in self.joints.iteritems():
             if isinstance(joint.j_to, flag.Flag):
                 joint.bend(
