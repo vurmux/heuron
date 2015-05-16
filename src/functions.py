@@ -38,7 +38,9 @@ def func_nop():
 
 def func_add(op1, op2):
     int_op1 = list_to_int(op1)
-    int_op2 = list_to_int(op2)
+    int_op2 = op2
+    if not isinstance(op2, int):
+        int_op2 = list_to_int(op2)
     int_result = int_op1 + int_op2
     return int_to_list(int_result)
 

@@ -68,7 +68,7 @@ class Register:
         self.fit()
         
     def get_int_value(self):
-        return sum(self.value[i] * 2**(i+1) for i in range(len(self.value)))
+        return sum(self.value[i] * 2**i for i in range(len(self.value)))
 
     def set_joint(self, joint):
         self.joint = joint
