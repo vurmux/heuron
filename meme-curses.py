@@ -116,19 +116,19 @@ if __name__=='__main__':
         # 1936946035 - 115, 115, 115, 115
         program = [
             "cpu.registers['EBX'].set_int_value(1793)",
-            "cpu.execute('MOVR', cpu.registers['EAX'], cpu.memory.get_bin(cpu.registers['EDX'].get_int_value(), 4))",
-            "cpu.registers['ECX'].set_int_value(1246382666)",
+            "cpu.execute('MOVR', cpu.registers['EAX'], cpu.memory.get_bin(cpu.registers['EDX'].get_int_value(), 1))",
+            "cpu.registers['ECX'].set_int_value(74)",
             "cpu.execute('XOR', cpu.registers['EAX'], cpu.registers['ECX'])",
-            "cpu.execute('ADD', cpu.registers['EDX'], cpu.registers['EBX'])",
-            "cpu.execute('MOVR', cpu.registers['EAX'], cpu.memory.get_bin(cpu.registers['EDX'].get_int_value(), 4))",
-            "cpu.registers['ECX'].set_int_value(1936946035)",
+            "cpu.execute('ADD', cpu.registers['EAX'], cpu.registers['EBX'])",
+            "cpu.execute('MOVR', cpu.registers['EAX'], cpu.memory.get_bin(cpu.registers['EAX'].get_int_value(), 1))",
+            "cpu.registers['ECX'].set_int_value(115)",
             "cpu.execute('XOR', cpu.registers['EAX'], cpu.registers['ECX'])",
-            "cpu.execute('SUB', cpu.registers['EDX'], cpu.registers['EBX'])",
-            "cpu.execute('MOVM', cpu.memory, cpu.registers['EDX'].get_int_value(), cpu.registers['EAX'].get_byte_list_value())",
-            "cpu.execute('ADD', cpu.registers['EDX'], 4)",
+            #"cpu.execute('SUB', cpu.registers['EDX'], cpu.registers['EBX'])",
+            "cpu.execute('MOVM', cpu.memory, cpu.registers['EDX'].get_int_value(), cpu.registers['EAX'].get_byte_list_value()[:1])",
+            "cpu.execute('ADD', cpu.registers['EDX'], 1)",
         ]
         
-        for i in range(10):
+        for i in range(100):
             for instruction in program:
                 eval(instruction)
                 refresh_cpu_screen(
@@ -139,6 +139,7 @@ if __name__=='__main__':
                     memo_window=memo_window
                 )
                 c = screen.getch()
+            print cpu.registers['EAX'].get_byte_list_value()
             
         c = screen.getch()
 
