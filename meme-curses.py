@@ -11,6 +11,7 @@ import functions
 import instruction
 import register
 import memory
+import label
 
 def create_subwindow(x, y, w, h, border_list, header):
     res = stdscr.subwin(12,14,0,0)
@@ -34,11 +35,11 @@ def create_suface():
          curses.ACS_PLUS, curses.ACS_PLUS, 0, curses.ACS_BTEE],
         'FLAGS'
     )
-    instr_window = create_subwindow(
+    sig_window = create_subwindow(
         17, 0, 20, 12,
         [0, 0, 0, 0,
          curses.ACS_TTEE, curses.ACS_TTEE, curses.ACS_PLUS, curses.ACS_RTEE],
-        'INSTRUCTIONS'
+        'SIGNATURES'
     )
     asm_window = create_subwindow(
         17, 11, 20, 12,
@@ -52,7 +53,7 @@ def create_suface():
          curses.ACS_TTEE, 0, curses.ACS_BTEE, 0],
         'MEMO DUMP'
     )
-    return (reg_window, flags_window, instr_window, asm_window, memo_window)
+    return (reg_window, flags_window, sig_window, asm_window, memo_window)
 
 def update_registers(reg_window, registers):
     i = 3
@@ -74,10 +75,50 @@ def update_memory(memo_window, memory):
         if i == 22:
             break
 
+def update_signatures(sig_window, signatures, memory):
+    total = 0
+    i = 3
+    for sig, threat in signatures:
+        if sig in str(memory):
+            sig_window.addstr(i, 1, 'V ' + sig)
+            i += 1
+            total += threat
+        else:
+            sig_window.addstr(i, 1, 'X ' + sig)
+            i += 1
+    sig_window.addstr(10, 1, 'TOTAL: ' + str(total) + '%')
+    
+
+def update_demo_program(asm_window):
+    program = [
+        'MOV EBX, 1792',
+        'LABEL:',
+        'MOV EAX, [EDX]',
+        'MOV ECX, 74',
+        'XOR EAX, ECX',
+        'ADD EAX, EBX',
+        'MOV EAX, [EAX]',
+        'MOV ECX, 115',
+        'XOR EAX, ECX',
+        'MOV [EDX], AL',
+        'INC EDX',
+        'CMP EDX, EBX',
+        'JNE LABEL',
+        'RET',
+    ]
+    i = 3
+    for line in program:
+        asm_window.addstr(i, 1, line)
+        i += 1
+        if i == 11:
+            break
+    
 def refresh_cpu_screen(cpu, screen, **kwargs):
     update_registers(kwargs['reg_window'], cpu.registers)
     update_flags(kwargs['flags_window'], cpu.flags)
     update_memory(kwargs['memo_window'], cpu.memory)
+    update_demo_program(kwargs['asm_window'])
+    update_signatures(kwargs['sig_window'], kwargs['signatures'], cpu.memory)
     screen.refresh()
 
 
@@ -92,7 +133,7 @@ if __name__=='__main__':
 
         (reg_window,
          flags_window,
-         instr_window,
+         sig_window,
          asm_window,
          memo_window) = create_suface()
 
@@ -111,11 +152,17 @@ if __name__=='__main__':
             ip_register='EIP',
             memory=cpu_memory
         )
+        
+        demo_signatures = [
+            ('/tmp', 1),
+            ('chmod', 3),
+            ('sed', 5)
+        ]
 
         # 1246382666 - 74, 74, 74, 74
         # 1936946035 - 115, 115, 115, 115
         program = [
-            "cpu.registers['EBX'].set_int_value(1793)",
+            "cpu.registers['EBX'].set_int_value(1792)",
             "cpu.execute('MOVR', cpu.registers['EAX'], cpu.memory.get_bin(cpu.registers['EDX'].get_int_value(), 1))",
             "cpu.registers['ECX'].set_int_value(74)",
             "cpu.execute('XOR', cpu.registers['EAX'], cpu.registers['ECX'])",
@@ -126,6 +173,7 @@ if __name__=='__main__':
             #"cpu.execute('SUB', cpu.registers['EDX'], cpu.registers['EBX'])",
             "cpu.execute('MOVM', cpu.memory, cpu.registers['EDX'].get_int_value(), cpu.registers['EAX'].get_byte_list_value()[:1])",
             "cpu.execute('ADD', cpu.registers['EDX'], 1)",
+            "cpu.execute('JMP', cpu.registers['EIP'], label.Label('', 0))",
         ]
         
         for i in range(100):
@@ -136,10 +184,12 @@ if __name__=='__main__':
                     screen,
                     reg_window=reg_window,
                     flags_window=flags_window,
-                    memo_window=memo_window
+                    memo_window=memo_window,
+                    asm_window=asm_window,
+                    sig_window=sig_window,
+                    signatures=demo_signatures
                 )
                 c = screen.getch()
-            print cpu.registers['EAX'].get_byte_list_value()
             
         c = screen.getch()
 
