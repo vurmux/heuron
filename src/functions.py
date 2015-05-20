@@ -74,9 +74,13 @@ def func_dec(op):
 
 # --- Other functions ---
 
-def func_jmp(ip, label, flag, negation=False):
+def func_jmp(ip, label, flag=None, negation=False):
+    if not flag:
+        ip.set_int_value(label.position)
+        return
     if negation ^ flag.state:
         ip.set_int_value(label.position)
+        return
 
 def func_mov_to_reg(target, value):
     if isinstance(value, list):
