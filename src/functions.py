@@ -37,7 +37,9 @@ def func_nop():
     pass
 
 def func_add(op1, op2):
-    int_op1 = list_to_int(op1)
+    int_op1 = op1
+    if not isinstance(op1, int):
+        int_op1 = list_to_int(op1)
     int_op2 = op2
     if not isinstance(op2, int):
         int_op2 = list_to_int(op2)
@@ -45,20 +47,32 @@ def func_add(op1, op2):
     return int_to_list(int_result)
 
 def func_sub(op1, op2):
-    int_op1 = list_to_int(op1)
-    int_op2 = list_to_int(op2)
+    int_op1 = op1
+    if not isinstance(op1, int):
+        int_op1 = list_to_int(op1)
+    int_op2 = op2
+    if not isinstance(op2, int):
+        int_op2 = list_to_int(op2)
     int_result = int_op1 - int_op2
     return int_to_list(int_result)
 
 def func_mul(op1, op2):
-    int_op1 = list_to_int(op1)
-    int_op2 = list_to_int(op2)
+    int_op1 = op1
+    if not isinstance(op1, int):
+        int_op1 = list_to_int(op1)
+    int_op2 = op2
+    if not isinstance(op2, int):
+        int_op2 = list_to_int(op2)
     int_result = int_op1 * int_op2
     return int_to_list(int_result)
 
 def func_div(op1, op2):
-    int_op1 = list_to_int(op1)
-    int_op2 = list_to_int(op2)
+    int_op1 = op1
+    if not isinstance(op1, int):
+        int_op1 = list_to_int(op1)
+    int_op2 = op2
+    if not isinstance(op2, int):
+        int_op2 = list_to_int(op2)
     int_result = int(float(int_op1) / int_op2)
     return int_to_list(int_result)
 
