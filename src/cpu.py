@@ -27,13 +27,13 @@ class CPU:
             self.ip_register = kwargs['ip_register']
         self.joints = []
         self.make_joint_topology()
-        
+
     def __str__(self):
         result = ''
         result = result + 'CPU: ' + self.name + '\n'
         result = result + 'REGISTERS:\n'
         for r_name in self.registers:
-            result = result + r_name + ': ' + str(self.registers[r_name]) + '\n'
+            result = result + r_name + ':' + str(self.registers[r_name]) + '\n'
         for f_name in self.flags:
             result = result + str(self.flags[f_name]) + '\n'
         for i_name in self.instructions:
@@ -42,26 +42,27 @@ class CPU:
         for j in self.joints:
             result = result + str(j) + '\n'
         return result
-        
+
     def execute(self, i_name, *operands):
         self.instructions[i_name].execute(*operands)
         if self.ip_register:
             self.registers[self.ip_register].value = functions.func_inc(
                 self.registers[self.ip_register].value
             )
-        
+
     def load_registers(reg_array):
         self.registers = {r.name: r for r in reg_array}
-        
+
     def load_flags(flag_array):
         self.flags = {f.name: f for f in flag_array}
-        
+
     def load_instructions(inst_array):
         self.instructions = {i.name: i for i in inst_array}
-        
+
     def make_joint_topology(self):
         for instruction in self.instructions:
-            for joint_name, joint in self.instructions[instruction].joints.iteritems():
+            for joint_name, joint in \
+                    self.instructions[instruction].joints.iteritems():
                 if joint_name == '-':
                     continue
                 if joint_name in self.flags:
@@ -73,9 +74,12 @@ class CPU:
                     self.joints.append(self.registers[joint_name].joint)
                 else:
                     raise AttributeError
-                
+
     def match_instruction(self, string):
-        instructions_regexps = {i.mnemonic: i for i in self.instructions.values()}
+        instructions_regexps = {
+            i.mnemonic: i
+            for i in self.instructions.values()
+        }
         for raw_regexp in instructions_regexps:
             regexp = re.compile(re.sub(r'\$\d+', '.*', raw_regexp))
             if regexp.match(string):
@@ -85,11 +89,13 @@ class CPU:
 
 if __name__ == '__main__':
     cpu_registers = register.load_from_file('../examples/x86/registers.json')
-    cpu_instructions = instruction.load_from_file('../examples/x86/instructions.json')
+    cpu_instructions = instruction.load_from_file(
+        '../examples/x86/instructions.json'
+    )
     cpu_flags = flag.load_from_file('../examples/x86/flags.json')
     cpu_memory = memory.MemoryPage(2048)
     cpu_memory.write_ord(0, eval(open('../examples/memory.txt').read()))
-    
+
     cpu = CPU(
         name='x86',
         instructions=cpu_instructions,
@@ -116,7 +122,12 @@ if __name__ == '__main__':
     print cpu
     print '-' * 40 + '\n'
     print cpu.memory.get_list(0, 4)
-    cpu.execute('MOVM', cpu.memory, 0, cpu.registers['EBX'].get_byte_list_value())
+    cpu.execute(
+        'MOVM',
+        cpu.memory,
+        0,
+        cpu.registers['EBX'].get_byte_list_value()
+    )
     print cpu.memory.get_list(0, 4)
     print cpu.match_instruction('XOR AX, BX')
     print cpu.match_instruction('XOR RAX, [RBX+1]')
