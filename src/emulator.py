@@ -3,14 +3,15 @@
 
 import cpu
 
+
 class Emulator:
-    
+
     def __init__(self, cpu, execution_limit, ip_register='EIP'):
         self.cpu = cpu
         self.program = []
         self.execution_limit = execution_limit
         self.ip_register = ip_register
-    
+
     def load_program(self, program):
         self.program = program.readlines()
 

@@ -9,7 +9,7 @@ class Register:
         self.name = name
         self.size = size
         self.value = [0] * self.size
-        
+
     def __str__(self):
         hex_list = []
         result = ''
@@ -18,18 +18,18 @@ class Register:
                 hex_list.append(str(b))
             else:
                 hex_list.append(str(b))
-                result += hex(int('0b' + ''.join(hex_list.__reversed__()), 2))[-1]
+                result += hex(int('0b' + ''.join(
+                    hex_list.__reversed__()), 2))[-1]
                 hex_list = []
         if hex_list:
             result += hex(int('0b' + ''.join(hex_list.__reversed__()), 2))[-1]
         return result[::-1].upper()
-                
+
     def binary_string(self):
         return (self.name +
                 ' ' +
-                ''.join(str(b) for b in self.value.__reversed__())
-        )
-    
+                ''.join(str(b) for b in self.value.__reversed__()))
+
     def get_byte_list_value(self):
         byte = 0
         byte_len = 0
@@ -45,10 +45,10 @@ class Register:
         if byte_len:
             result.append(int(byte))
         return result
-    
+
     def reset(self):
         self.value = [0] * self.size
-    
+
     def set_str_value(self, value):
         self.reset()
         if len(value) > len(self.value):
@@ -63,16 +63,16 @@ class Register:
 
     def set_int_value(self, value):
         self.reset()
-        bin_value = bin(value)[2: ]
+        bin_value = bin(value)[2:]
         self.set_str_value(bin_value)
         self.fit()
-        
+
     def get_int_value(self):
         return sum(self.value[i] * 2**i for i in range(len(self.value)))
 
     def set_joint(self, joint):
         self.joint = joint
-        
+
     def fit(self):
         if len(self.value) > self.size:
             self.value = self.value[:self.size]
@@ -89,7 +89,7 @@ def load_from_file(filename):
     for register in registers:
         result.append(Register(register['name'], register['size']))
     return result
-    
+
 
 if __name__ == '__main__':
     ax = Register('AX')
@@ -99,4 +99,7 @@ if __name__ == '__main__':
     print ax
     ax.reset()
     print ax
-    print [str(elem) for elem in load_from_file('../examples/x86/registers.json')]
+    print [
+        str(elem)
+        for elem in load_from_file('../examples/x86/registers.json')
+    ]

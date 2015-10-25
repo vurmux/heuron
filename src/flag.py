@@ -4,18 +4,18 @@ import json
 
 
 class Flag:
-    
+
     def __init__(self, name, function):
         self.name = name
         self.state = False
         self.function = function
-        
+
     def __str__(self):
         return self.name + ' ' + str(int(self.state))
-        
+
     def set_joint(self, joint):
         self.joint = joint
-        
+
     def set(self):
         self.state = True
 

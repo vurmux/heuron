@@ -4,12 +4,13 @@
 import string
 import functions
 
+
 class MemoryPage:
-    
+
     def __init__(self, size):
         self.size = size
         self.value = [0] * size
-        
+
     def __str__(self):
         width = 64
         pos = 0
@@ -44,34 +45,37 @@ class MemoryPage:
         for char in writing_string:
             self.value[pos] = ord(char)
             pos += 1
-            
+
     def write_ord(self, address=0, data_list=[]):
         writing_list = data_list[:self.size-address]
         pos = address
         for byte in writing_list:
             self.value[pos] = byte
             pos += 1
-            
+
     def get_list(self, address, length):
         return self.value[address: address+length]
-    
+
     def get_int(self, address, length):
         target_list = self.get_list(address, length)
-        return sum(target_list[::-1][i] * 255**i for i in range(len(target_list)))
-    
+        return sum(
+            target_list[::-1][i] * 255**i
+            for i in range(len(target_list))
+        )
+
     def get_bin(self, address, byte_length):
         return functions.int_to_list(self.get_int(address, byte_length))
 
 
 class Memory:
-    
+
     def __init__(page_size=4096):
         self.page_size = page_size
         self.pages = {}
-    
+
     def create_page(page_id):
         self.pages[page_id] = MemoryPage(self.page_size)
-    
+
     def write_page(page_id, data_string):
         pass
 
