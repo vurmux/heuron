@@ -1,6 +1,11 @@
 #!/usr/bin/python
 
-import curses, traceback, string, os, time, json
+import curses
+import traceback
+import string
+import os
+import time
+import json
 import sys
 sys.path.append('./src/')
 
@@ -13,15 +18,17 @@ import register
 import memory
 import label
 
+
 def create_subwindow(x, y, w, h, border_list, header):
-    res = stdscr.subwin(12,14,0,0)
-    res = stdscr.subwin(h,w,y,x)
+    res = stdscr.subwin(12, 14, 0, 0)
+    res = stdscr.subwin(h, w, y, x)
     b1, b2, b3, b4, b5, b6, b7, b8 = border_list
     res.border(b1, b2, b3, b4, b5, b6, b7, b8)
     #inbox_w = w - 2
     res.addstr(1, 1, header)
-    res.hline(2, 1, chr(45), w-2)
+    res.hline(2, 1, chr(45), w - 2)
     return res
+
 
 def create_suface():
     reg_window = create_subwindow(
@@ -55,17 +62,20 @@ def create_suface():
     )
     return (reg_window, flags_window, sig_window, asm_window, memo_window)
 
+
 def update_registers(reg_window, registers):
     i = 3
     for reg in registers:
         reg_window.addstr(i, 1, reg + ' ' + str(registers[reg]))
         i += 1
-        
+
+
 def update_flags(flags_window, flags):
     i = 3
     for flag in flags:
         flags_window.addstr(i, 1, str(flags[flag]))
         i += 1
+
 
 def update_memory(memo_window, memory):
     i = 3
@@ -74,6 +84,7 @@ def update_memory(memo_window, memory):
         i += 1
         if i == 22:
             break
+
 
 def update_signatures(sig_window, signatures, memory):
     total = 0
@@ -87,7 +98,7 @@ def update_signatures(sig_window, signatures, memory):
             sig_window.addstr(i, 1, 'X ' + sig)
             i += 1
     sig_window.addstr(10, 1, 'TOTAL: ' + str(total) + '%')
-    
+
 
 def update_demo_program(asm_window):
     program = [
@@ -112,7 +123,8 @@ def update_demo_program(asm_window):
         i += 1
         if i == 11:
             break
-    
+
+
 def refresh_cpu_screen(cpu, screen, **kwargs):
     update_registers(kwargs['reg_window'], cpu.registers)
     update_flags(kwargs['flags_window'], cpu.flags)
@@ -122,10 +134,11 @@ def refresh_cpu_screen(cpu, screen, **kwargs):
     screen.refresh()
 
 
-if __name__=='__main__':
+if __name__ == '__main__':
     try:
-        stdscr=curses.initscr()
-        curses.noecho() ; curses.cbreak()
+        stdscr = curses.initscr()
+        curses.noecho()
+        curses.cbreak()
         screen = stdscr.subwin(23, 79, 0, 0)
         screen.box()
         screen.refresh()
@@ -137,8 +150,12 @@ if __name__=='__main__':
          asm_window,
          memo_window) = create_suface()
 
-        cpu_registers = register.load_from_file('./examples/x86/registers.json')
-        cpu_instructions = instruction.load_from_file('./examples/x86/instructions.json')
+        cpu_registers = register.load_from_file(
+            './examples/x86/registers.json'
+        )
+        cpu_instructions = instruction.load_from_file(
+            './examples/x86/instructions.json'
+        )
         cpu_flags = flag.load_from_file('./examples/x86/flags.json')
         cpu_memory = memory.MemoryPage(2048)
         loaded_memory = eval(open('./examples/memory.txt').read())
@@ -152,7 +169,7 @@ if __name__=='__main__':
             ip_register='EIP',
             memory=cpu_memory
         )
-        
+
         demo_signatures = [
             ('/tmp', 1),
             ('chmod', 3),
@@ -163,19 +180,32 @@ if __name__=='__main__':
         # 1936946035 - 115, 115, 115, 115
         program = [
             "cpu.registers['EBX'].set_int_value(1792)",
-            "cpu.execute('MOVR', cpu.registers['EAX'], cpu.memory.get_bin(cpu.registers['EDX'].get_int_value(), 1))",
+            """cpu.execute(
+                'MOVR',
+                cpu.registers['EAX'],
+                cpu.memory.get_bin(cpu.registers['EDX'].get_int_value(), 1)
+            )""",
             "cpu.registers['ECX'].set_int_value(74)",
             "cpu.execute('XOR', cpu.registers['EAX'], cpu.registers['ECX'])",
             "cpu.execute('ADD', cpu.registers['EAX'], cpu.registers['EBX'])",
-            "cpu.execute('MOVR', cpu.registers['EAX'], cpu.memory.get_bin(cpu.registers['EAX'].get_int_value(), 1))",
+            """cpu.execute(
+                'MOVR',
+                cpu.registers['EAX'],
+                cpu.memory.get_bin(cpu.registers['EAX'].get_int_value(), 1)
+            )""",
             "cpu.registers['ECX'].set_int_value(115)",
             "cpu.execute('XOR', cpu.registers['EAX'], cpu.registers['ECX'])",
             #"cpu.execute('SUB', cpu.registers['EDX'], cpu.registers['EBX'])",
-            "cpu.execute('MOVM', cpu.memory, cpu.registers['EDX'].get_int_value(), cpu.registers['EAX'].get_byte_list_value()[:1])",
+            """cpu.execute(
+                'MOVM',
+                cpu.memory,
+                cpu.registers['EDX'].get_int_value(),
+                cpu.registers['EAX'].get_byte_list_value()[:1]
+            )""",
             "cpu.execute('ADD', cpu.registers['EDX'], 1)",
             "cpu.execute('JMP', cpu.registers['EIP'], label.Label('', 0))",
         ]
-        
+
         for i in range(100):
             for instruction in program:
                 eval(instruction)
@@ -190,14 +220,16 @@ if __name__=='__main__':
                     signatures=demo_signatures
                 )
                 c = screen.getch()
-            
+
         c = screen.getch()
 
         stdscr.keypad(0)
-        curses.echo() ; curses.nocbreak()
+        curses.echo()
+        curses.nocbreak()
         curses.endwin()
     except:
         stdscr.keypad(0)
-        curses.echo() ; curses.nocbreak()
+        curses.echo()
+        curses.nocbreak()
         curses.endwin()
         traceback.print_exc()
